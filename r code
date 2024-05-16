@@ -1,0 +1,38 @@
+# Do pobrania danych i zapisania ich jako csv możemy skorzystać z dwóch bibliotek: googleAnalyticsR oraz readr będąca częścią dużego pakietu tidyverse
+# Możemy również zapisac do excela używając pakietu openxlsx
+# instalujemy pakiety
+
+install.packages("tidyverse")
+install.packages("googleAnalyticsR")
+
+#ładujemy pakiety
+library(readr) # ładuję tylko readr, cały tidyverse jest nie potrzebny
+library(googleAnalyticsR)
+
+#autoryzacja opiera się na adresie email, który jest połączony z google analytics
+ga_auth(email="twoj_adres_email")
+#powinno otworzyć kartę w przeglądarce, w której będziesz musiał się zalogować do konta google i nadać uprawnienia dla aplikacji R - zaznacz wszystkie checkboxy i zezwól na dostęp
+#jeśli wszystko pójdzie dobrze, dostaniesz komunikat, ze mozesz zamknąc kartę przeglądarki i wrócić do R
+
+#pobieranie danych z UA. Wykorzystamy do tego funkcję google_analytics.
+#potrzebny jest nr widoku, ponieważ dane pobierasz z konkretnego widoku z usługi UA
+
+id_ua <- 66077340
+
+#pola z których możesz skorzystać dostepne są pod tym linkiem - https://ga-dev-tools.google/dimensions-metrics-explorer/
+# Należy pamiętać, że nie każdy wymiar jest kompatybilny z każdą metryką
+
+kanaly <- google_analytics(id_ua, date_range = c("2020-01-01", "2022-12-31"), #podaj zakres dat który cie interesuje
+                           dimension = c("ga:yearMonth", "ga:channelGrouping"), #wymiary, maksymalnie można chyba 9
+                           metrics = c("ga:sessions", "ga:users", "ga:avgSessionDuration"), #miary
+                           anti_sample = TRUE, #zanzacz jeśli chcesz uniknąć próbkowania
+                           samplingLevel = "LARGE")
+
+# Po wykonaniu kodu otrzymamy obiekt dataframe o nazwie kanaly
+# w razie potrzeby możemy wykonywać różne operacje na tym obiekcie - konwerjsa jedneostek, nowe kolumny obliczeniowe, grupowanie itd. 
+
+# W przypadku wielu kont GA UA, kod można umieścić np. w pętli for aby jedno konto za drugim pobierał dane
+
+#zapisujemy do csv
+
+write_csv(kanaly, "ua_archive_kanaly_xyz.csv)
