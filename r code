@@ -36,3 +36,8 @@ kanaly <- google_analytics(id_ua, date_range = c("2020-01-01", "2022-12-31"), #p
 #zapisujemy do csv
 
 write_csv(kanaly, "ua_archive_kanaly_xyz.csv)
+
+# Możliwe jest również filtrowanie, np w funkcji google_analytics:
+# strony_url <- dim_filter("page", "CONTAINS", "xyz", not = FALSE)
+# dim_filters = filter_clause_ga4(strony_url), operator = "OR")
+# lub konkretne segmenty itd
